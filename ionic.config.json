@@ -1,0 +1,7 @@
+{
+  "name": "patternai-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
