@@ -1,36 +1,38 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from '../guards/admin.guard';
 import { TabsPage } from './tabs.page';
 
 export const routes: Routes = [
   {
-    path: 'tabs',
+    path: '',
     component: TabsPage,
     children: [
       {
-        path: 'tab1',
+        path: 'inicio',
         loadComponent: () =>
-          import('../tab1/tab1.page').then((m) => m.Tab1Page),
+          import('../pages/inicio/inicio.page').then((m) => m.InicioPage),
       },
       {
-        path: 'tab2',
+        path: 'guias',
+        canActivate: [adminGuard],
         loadComponent: () =>
-          import('../tab2/tab2.page').then((m) => m.Tab2Page),
+          import('../pages/guias/guias.page').then((m) => m.GuiasPage),
       },
       {
-        path: 'tab3',
+        path: 'equipo',
         loadComponent: () =>
-          import('../tab3/tab3.page').then((m) => m.Tab3Page),
+          import('../pages/equipo/equipo.page').then((m) => m.EquipoPage),
+      },
+      {
+        path: 'cuenta',
+        loadComponent: () =>
+          import('../pages/cuenta/cuenta.page').then((m) => m.CuentaPage),
       },
       {
         path: '',
-        redirectTo: '/tabs/tab1',
+        redirectTo: 'inicio',
         pathMatch: 'full',
       },
     ],
-  },
-  {
-    path: '',
-    redirectTo: '/tabs/tab1',
-    pathMatch: 'full',
   },
 ];

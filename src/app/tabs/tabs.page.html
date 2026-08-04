@@ -1,18 +1,32 @@
-<ion-tabs>
-  <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="tab1" href="/tabs/tab1">
-      <ion-icon aria-hidden="true" name="triangle"></ion-icon>
-      <ion-label>Tab 1</ion-label>
+<ion-tabs class="floating-tabs">
+  <ion-tab-bar slot="bottom" class="pattern-tab-bar">
+    <ion-tab-button tab="inicio" href="/tabs/inicio" class="main-tab">
+      <ion-icon name="home-outline" aria-hidden="true"></ion-icon>
+      <ion-label>Inicio</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="tab2" href="/tabs/tab2">
-      <ion-icon aria-hidden="true" name="ellipse"></ion-icon>
-      <ion-label>Tab 2</ion-label>
+    <ion-tab-button
+      tab="guias"
+      href="/tabs/guias"
+      class="main-tab"
+      [disabled]="!isAdmin"
+      [class.tab-disabled]="!isAdmin">
+      @if (isAdmin) {
+        <ion-icon name="document-text-outline" aria-hidden="true"></ion-icon>
+      } @else {
+        <ion-icon name="lock-closed-outline" aria-hidden="true"></ion-icon>
+      }
+      <ion-label>Guías</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="tab3" href="/tabs/tab3">
-      <ion-icon aria-hidden="true" name="square"></ion-icon>
-      <ion-label>Tab 3</ion-label>
+    <ion-tab-button tab="equipo" href="/tabs/equipo" class="main-tab">
+      <ion-icon name="people-outline" aria-hidden="true"></ion-icon>
+      <ion-label>Equipo</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="cuenta" href="/tabs/cuenta" class="cuenta-tab-btn">
+      <span class="cuenta-initials" aria-hidden="true">{{ initials }}</span>
+      <ion-label>Cuenta</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>

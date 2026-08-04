@@ -1,0 +1,172 @@
+<ion-header class="pa-header" [class.pa-header--compact]="headerCompact()">
+  <ion-toolbar>
+    <ion-title>Guías</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="pa-content" [scrollEvents]="true" (ionScroll)="onScroll($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="search-bar">
+    <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
+    <input
+      type="search"
+      [placeholder]="'Buscar en ' + totalCount + ' guías…'"
+      [value]="search()"
+      (input)="search.set($any($event.target).value)" />
+  </div>
+
+  @if (canCreate) {
+    <div class="quick-access quick-access--inline">
+      <button type="button" class="quick-access__item" (click)="openCreate()">
+        <span class="quick-access__circle primary">
+          <ion-icon name="create-outline" aria-hidden="true"></ion-icon>
+        </span>
+        <span class="quick-access__label">Crear guía</span>
+      </button>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="guide-grid">
+      @for (i of [0, 1, 2, 3]; track i) {
+        <div class="guide-tile guide-tile--skeleton">
+          <div class="skeleton-line w-60" style="height:44px;border-radius:14px"></div>
+          <div class="skeleton-line w-80 h-lg"></div>
+        </div>
+      }
+    </div>
+  } @else if (items().length === 0) {
+    <div class="pa-empty">
+      <div class="pa-empty__icon">
+        <ion-icon name="library-outline" aria-hidden="true"></ion-icon>
+      </div>
+      <h4 class="pa-empty__title">Catálogo vacío</h4>
+      <p class="pa-empty__text">Crea tu primera guía para que tu equipo tenga procedimientos a mano.</p>
+      @if (canCreate) {
+        <div class="inline-action">
+          <ion-button class="pa-btn-lg solid" (click)="openCreate()">Crear guía</ion-button>
+        </div>
+      }
+    </div>
+  } @else if (filteredItems().length === 0) {
+    <div class="pa-empty">
+      <div class="pa-empty__icon">
+        <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
+      </div>
+      <h4 class="pa-empty__title">Sin resultados</h4>
+      <p class="pa-empty__text">No encontramos guías que coincidan con tu búsqueda.</p>
+    </div>
+  } @else {
+    <div class="guide-grid">
+      @for (item of filteredItems(); track item.guide.id; let i = $index) {
+        <button
+          type="button"
+          class="guide-tile list-enter"
+          [style.--i]="i"
+          (click)="openDetail(item.guide)">
+          <span class="guide-tile__icon">
+            <ion-icon name="document-text-outline" aria-hidden="true"></ion-icon>
+          </span>
+          <span class="guide-tile__title">{{ item.guide.title }}</span>
+          <span class="vis-chip guide-tile__chip" [class]="visibilityBadge(item).css">
+            {{ visibilityBadge(item).label }}
+          </span>
+        </button>
+      }
+    </div>
+  }
+
+</ion-content>
+
+<ion-modal
+  class="pa-sheet"
+  [isOpen]="createOpen()"
+  [breakpoints]="[0, 0.85, 1]"
+  [initialBreakpoint]="0.85"
+  handle="true"
+  [keepContentsMounted]="true"
+  (didDismiss)="closeCreate()">
+  <ng-template>
+    <ion-content class="sheet-body">
+      <div class="sheet-header">
+        <h2>Nueva guía</h2>
+        <p>Completa los datos y guarda</p>
+      </div>
+
+      <ion-item lines="none" class="pa-form-item">
+        <ion-label position="stacked">Título</ion-label>
+        <ion-input [(ngModel)]="formTitle" placeholder="Ej. Configurar JWT en Express"></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" class="pa-form-item">
+        <ion-label position="stacked">Categoría</ion-label>
+        <ion-select [(ngModel)]="formCategory" interface="popover">
+          @for (cat of categories; track cat) {
+            <ion-select-option [value]="cat">{{ cat }}</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+
+      <ion-item lines="none" class="pa-form-item">
+        <ion-label position="stacked">Visibilidad</ion-label>
+        <ion-select [(ngModel)]="formVisibility" interface="popover">
+          <ion-select-option value="private">Privada</ion-select-option>
+          <ion-select-option value="shared">Compartida</ion-select-option>
+          <ion-select-option value="company">Empresa</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item lines="none" class="pa-form-item">
+        <ion-label position="stacked">Contenido (Markdown)</ion-label>
+        <ion-textarea
+          [(ngModel)]="formContent"
+          placeholder="Escribe el contenido de la guía…"
+          [autoGrow]="true"
+          rows="8">
+        </ion-textarea>
+      </ion-item>
+
+      <div class="sheet-actions">
+        <ion-button class="pa-btn-lg solid" (click)="saveGuide()" [disabled]="saving()">
+          @if (saving()) { <ion-spinner name="crescent"></ion-spinner> } @else { Guardar guía }
+        </ion-button>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<ion-modal
+  class="pa-sheet"
+  [isOpen]="shareSheetOpen()"
+  [breakpoints]="[0, 0.55]"
+  [initialBreakpoint]="0.55"
+  handle="true"
+  [keepContentsMounted]="true"
+  (didDismiss)="closeShareSheet()">
+  <ng-template>
+    <ion-content class="sheet-body">
+      <div class="sheet-header">
+        <h2>Compartir con…</h2>
+        <p>Elige un miembro del equipo</p>
+      </div>
+      @for (m of shareMembers(); track m.id) {
+        <button type="button" class="sheet-member" (click)="pickShareMember(m)">
+          {{ m.full_name ?? 'Sin nombre' }}
+        </button>
+      }
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<ion-toast
+  class="pa-toast"
+  [isOpen]="toastOpen()"
+  [message]="toastMessage()"
+  duration="3500"
+  position="bottom"
+  [color]="toastColor()"
+  (didDismiss)="toastOpen.set(false)">
+</ion-toast>

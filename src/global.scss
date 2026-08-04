@@ -34,4 +34,14 @@
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+/* Desactivado: la UI del mockup es siempre clara; dark.system invertía textos en fondos claros. */
+/* @import '@ionic/angular/css/palettes/dark.system.css'; */
+
+@import './theme/ui.scss';
+
+html,
+body {
+  font-family: var(--pa-font);
+  color: var(--pa-text);
+  background: var(--pa-bg);
+}

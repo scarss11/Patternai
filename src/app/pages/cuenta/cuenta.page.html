@@ -1,0 +1,116 @@
+<ion-header class="pa-header" [class.pa-header--compact]="headerCompact()">
+  <ion-toolbar>
+    <ion-title>Cuenta</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="pa-content" [scrollEvents]="true" (ionScroll)="onScroll($event)">
+  <div class="profile-card list-enter">
+    <div class="profile-card__avatar">{{ initials }}</div>
+    <div class="profile-card__info">
+      <p class="profile-card__name">{{ profileName }}</p>
+      <p class="profile-card__meta">{{ roleLabel }}</p>
+      <p class="profile-card__org">{{ orgName() }}</p>
+    </div>
+  </div>
+
+  <div class="sec-h">
+    <h3>Ajustes</h3>
+  </div>
+
+  @for (row of settingsRows; track row.title; let i = $index) {
+    <button
+      type="button"
+      class="settings-row list-enter"
+      [style.--i]="i"
+      (click)="openRow(row)">
+      <span class="settings-row__icon-wrap">
+        <ion-icon [name]="row.icon" aria-hidden="true"></ion-icon>
+      </span>
+      <span class="settings-row__title">{{ row.title }}</span>
+      <ion-icon class="settings-row__chev" name="chevron-forward" aria-hidden="true"></ion-icon>
+    </button>
+  }
+
+  <div class="logout-wrap">
+    <ion-button
+      fill="outline"
+      color="danger"
+      class="pa-btn-lg"
+      [disabled]="loggingOut()"
+      (click)="logout()">
+      <ion-icon slot="start" name="log-out-outline" aria-hidden="true"></ion-icon>
+      Cerrar sesión
+    </ion-button>
+  </div>
+
+  <ion-modal
+    class="pa-sheet"
+    [isOpen]="langOpen()"
+    [breakpoints]="[0, 0.45]"
+    [initialBreakpoint]="0.45"
+    handle="true"
+    (didDismiss)="closeLanguage()">
+    <ng-template>
+      <ion-content class="sheet-body">
+        <div class="sheet-header">
+          <h2>Idioma</h2>
+          <p>Elige tu idioma preferido</p>
+        </div>
+        <ion-radio-group [(ngModel)]="language">
+          <ion-item lines="none" class="pa-form-item">
+            <ion-radio value="es" labelPlacement="end">Español</ion-radio>
+          </ion-item>
+          <ion-item lines="none" class="pa-form-item">
+            <ion-radio value="en" labelPlacement="end">English</ion-radio>
+          </ion-item>
+        </ion-radio-group>
+        <div class="sheet-actions">
+          <ion-button class="pa-btn-lg solid" (click)="saveLanguage()">Guardar</ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal
+    class="pa-sheet"
+    [isOpen]="notifOpen()"
+    [breakpoints]="[0, 0.55]"
+    [initialBreakpoint]="0.55"
+    handle="true"
+    (didDismiss)="closeNotifications()">
+    <ng-template>
+      <ion-content class="sheet-body">
+        <div class="sheet-header">
+          <h2>Notificaciones</h2>
+          <p>Preferencias locales (placeholder)</p>
+        </div>
+        <div class="perm-row">
+          <span>Guía compartida contigo</span>
+          <ion-toggle [(ngModel)]="notifPrefs.guideShared"></ion-toggle>
+        </div>
+        <div class="perm-row">
+          <span>Actualizaciones del equipo</span>
+          <ion-toggle [(ngModel)]="notifPrefs.teamUpdates"></ion-toggle>
+        </div>
+        <div class="perm-row">
+          <span>Novedades de PatternAI</span>
+          <ion-toggle [(ngModel)]="notifPrefs.productNews"></ion-toggle>
+        </div>
+        <div class="sheet-actions">
+          <ion-button class="pa-btn-lg solid" (click)="saveNotifications()">Guardar</ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-toast
+    class="pa-toast"
+    [isOpen]="toastOpen()"
+    [message]="toastMessage()"
+    duration="3000"
+    position="bottom"
+    color="success"
+    (didDismiss)="toastOpen.set(false)">
+  </ion-toast>
+</ion-content>

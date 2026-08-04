@@ -1,0 +1,29 @@
+<ion-header class="pa-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/cuenta/ayuda" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Ayuda</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="pa-content">
+  @if (notFound()) {
+    <div class="error-state">
+      <div class="pa-empty__icon">
+        <ion-icon name="help-circle-outline" aria-hidden="true"></ion-icon>
+      </div>
+      <h2>Artículo no encontrado</h2>
+      <p>Este contenido de ayuda no existe o fue movido.</p>
+      <ion-button class="pa-btn outline" routerLink="/cuenta/ayuda">Volver</ion-button>
+    </div>
+  } @else {
+    <div class="detail-hero list-enter">
+      <div class="guide-card__top">
+        <h1 class="guide-card__title" style="font-size:1.25rem">{{ title() }}</h1>
+        <span class="vis-chip company">{{ category() }}</span>
+      </div>
+    </div>
+    <article class="detail-content list-enter" [style.--i]="1" [innerHTML]="htmlContent()"></article>
+  }
+</ion-content>

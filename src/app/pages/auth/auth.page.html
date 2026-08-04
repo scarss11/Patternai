@@ -1,0 +1,99 @@
+<ion-content class="pa-page auth-shell" fullscreen>
+  <div class="auth-brand">
+    <div class="auth-brand__logo">P</div>
+    <h1 class="auth-brand__title">PatternAI</h1>
+    <p class="auth-brand__sub">Guías técnicas para tu equipo</p>
+  </div>
+
+  <div class="auth-card">
+    @if (mode() !== 'organization') {
+      <div class="auth-segment">
+        <button
+          type="button"
+          [class.active]="mode() === 'login'"
+          (click)="setMode('login')">
+          Iniciar sesión
+        </button>
+        <button
+          type="button"
+          [class.active]="mode() === 'register'"
+          (click)="setMode('register')">
+          Registrarse
+        </button>
+      </div>
+    }
+
+    @switch (mode()) {
+      @case ('login') {
+        <h2 class="pa-section-title" style="margin-top:0">Bienvenido</h2>
+        <p style="color:var(--pa-text-soft);margin:-8px 0 16px;font-size:0.9rem">Accede con tu cuenta de la empresa</p>
+
+        <div class="pa-field">
+          <label for="login-email">Email</label>
+          <input id="login-email" type="email" placeholder="tu@empresa.com" [(ngModel)]="email" autocomplete="email" />
+        </div>
+        <div class="pa-field">
+          <label for="login-password">Contraseña</label>
+          <input id="login-password" type="password" placeholder="••••••••" [(ngModel)]="password" autocomplete="current-password" (keyup.enter)="signIn()" />
+        </div>
+
+        <ion-button expand="block" class="pa-btn-lg solid" (click)="signIn()" [disabled]="loading()">
+          @if (loading()) { <ion-spinner name="crescent"></ion-spinner> } @else { Entrar }
+        </ion-button>
+      }
+
+      @case ('register') {
+        <h2 class="pa-section-title" style="margin-top:0">Crear cuenta</h2>
+        <p style="color:var(--pa-text-soft);margin:-8px 0 16px;font-size:0.9rem">Regístrate para empezar con PatternAI</p>
+
+        <div class="pa-field">
+          <label for="register-name">Nombre completo</label>
+          <input id="register-name" type="text" placeholder="María Jiménez" [(ngModel)]="fullName" autocomplete="name" />
+        </div>
+        <div class="pa-field">
+          <label for="register-email">Email</label>
+          <input id="register-email" type="email" placeholder="tu@empresa.com" [(ngModel)]="email" autocomplete="email" />
+        </div>
+        <div class="pa-field">
+          <label for="register-password">Contraseña</label>
+          <input id="register-password" type="password" placeholder="Mínimo 6 caracteres" [(ngModel)]="password" autocomplete="new-password" />
+        </div>
+
+        <ion-button expand="block" class="pa-btn-lg solid" (click)="signUp()" [disabled]="loading()">
+          @if (loading()) { <ion-spinner name="crescent"></ion-spinner> } @else { Registrarse }
+        </ion-button>
+      }
+
+      @case ('organization') {
+        <span class="step-pill">Paso 3 de 3</span>
+        <h2 class="pa-section-title" style="margin-top:0">Crea tu empresa</h2>
+        <p style="color:var(--pa-text-soft);margin:-8px 0 16px;font-size:0.9rem;line-height:1.5">
+          Serás administrador y podrás invitar a tu equipo y crear guías.
+        </p>
+
+        <div class="pa-field">
+          <label for="org-name">Nombre de la empresa</label>
+          <input id="org-name" type="text" placeholder="Mi Empresa S.L." [(ngModel)]="orgName" autocomplete="organization" />
+        </div>
+
+        <ion-button expand="block" class="pa-btn-lg solid" (click)="createOrganization()" [disabled]="loading()">
+          @if (loading()) { <ion-spinner name="crescent"></ion-spinner> } @else { Crear empresa }
+        </ion-button>
+
+        <button type="button" class="skip-btn" (click)="continueToApp()">
+          Ya estoy vinculado, continuar a la app
+        </button>
+      }
+    }
+  </div>
+
+  <ion-toast
+    class="pa-toast"
+    [isOpen]="toastOpen()"
+    [message]="toastMessage()"
+    duration="3500"
+    position="bottom"
+    [color]="toastColor()"
+    (didDismiss)="toastOpen.set(false)">
+  </ion-toast>
+</ion-content>

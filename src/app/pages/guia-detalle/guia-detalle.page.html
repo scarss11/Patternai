@@ -1,0 +1,141 @@
+<ion-header class="pa-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/inicio" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Guía</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="pa-content">
+  @if (loading()) {
+    <div class="detail-hero">
+      <div class="skeleton-line h-lg w-80"></div>
+      <div class="skeleton-line w-60"></div>
+    </div>
+    <div class="detail-content">
+      @for (i of [0, 1, 2, 3, 4]; track i) {
+        <div class="skeleton-line" [class.w-80]="i % 2 === 0" [class.w-60]="i % 2 !== 0"></div>
+      }
+    </div>
+  } @else if (loadError()) {
+    <div class="error-state">
+      <div class="pa-empty__icon">
+        <ion-icon name="alert-circle-outline" aria-hidden="true"></ion-icon>
+      </div>
+      <h2>No se pudo cargar la guía</h2>
+      <p>{{ loadError() }}</p>
+      <ion-button class="pa-btn outline" routerLink="/tabs/inicio">Volver al inicio</ion-button>
+    </div>
+  } @else if (guide(); as g) {
+    <div class="detail-hero list-enter">
+      <div class="guide-card__top">
+        <h1 class="detail-hero__title">{{ g.title }}</h1>
+        <span class="vis-chip" [class]="visibilityBadge().css">{{ visibilityBadge().label }}</span>
+      </div>
+      <p class="guide-card__meta">{{ metaLine() }}</p>
+    </div>
+
+    <article class="detail-content list-enter" [style.--i]="1" [innerHTML]="htmlContent()"></article>
+
+    <div class="actions-bar list-enter" [style.--i]="2">
+      @if (canDownload) {
+        <button type="button" class="icon-btn" (click)="onPdf()" [disabled]="actionLoading()">PDF</button>
+      }
+      @if (canShare) {
+        <button type="button" class="icon-btn" (click)="onShareMember()" [disabled]="actionLoading()">Compartir</button>
+        <button type="button" class="icon-btn primary" (click)="onShareLink()" [disabled]="actionLoading()">Enlace</button>
+      }
+    </div>
+
+    @if (canEdit) {
+      <div class="manage-bar list-enter" [style.--i]="3">
+        <ion-button class="pa-btn-lg outline" (click)="openEdit()" [disabled]="actionLoading()">Editar</ion-button>
+        <ion-button color="danger" fill="outline" class="pa-btn-lg" (click)="confirmDelete()" [disabled]="actionLoading()">Eliminar</ion-button>
+      </div>
+    }
+  }
+
+  <ion-modal
+    class="pa-sheet"
+    [isOpen]="editOpen()"
+    [breakpoints]="[0, 0.85, 1]"
+    [initialBreakpoint]="0.85"
+    handle="true"
+    (didDismiss)="closeEdit()">
+    <ng-template>
+      <ion-content class="sheet-body">
+        <div class="sheet-header">
+          <h2>Editar guía</h2>
+          <p>Actualiza título, visibilidad o contenido</p>
+        </div>
+
+        <ion-item lines="none" class="pa-form-item">
+          <ion-label position="stacked">Título</ion-label>
+          <ion-input [(ngModel)]="formTitle"></ion-input>
+        </ion-item>
+
+        <ion-item lines="none" class="pa-form-item">
+          <ion-label position="stacked">Categoría</ion-label>
+          <ion-select [(ngModel)]="formCategory" interface="popover">
+            @for (cat of categories; track cat) {
+              <ion-select-option [value]="cat">{{ cat }}</ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+
+        <ion-item lines="none" class="pa-form-item">
+          <ion-label position="stacked">Visibilidad</ion-label>
+          <ion-select [(ngModel)]="formVisibility" interface="popover">
+            <ion-select-option value="private">Privada</ion-select-option>
+            <ion-select-option value="shared">Compartida</ion-select-option>
+            <ion-select-option value="company">Empresa</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item lines="none" class="pa-form-item">
+          <ion-label position="stacked">Contenido (Markdown)</ion-label>
+          <ion-textarea [(ngModel)]="formContent" [autoGrow]="true" rows="8"></ion-textarea>
+        </ion-item>
+
+        <div class="sheet-actions">
+          <ion-button class="pa-btn-lg solid" (click)="saveEdit()" [disabled]="saving()">
+            @if (saving()) { <ion-spinner name="crescent"></ion-spinner> } @else { Guardar cambios }
+          </ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal
+    class="pa-sheet"
+    [isOpen]="shareSheetOpen()"
+    [breakpoints]="[0, 0.55]"
+    [initialBreakpoint]="0.55"
+    handle="true"
+    (didDismiss)="closeShareSheet()">
+    <ng-template>
+      <ion-content class="sheet-body">
+        <div class="sheet-header">
+          <h2>Compartir con…</h2>
+          <p>Elige un miembro del equipo</p>
+        </div>
+        @for (m of shareMembers(); track m.id) {
+          <button type="button" class="sheet-member" (click)="pickShareMember(m)">
+            {{ m.full_name ?? 'Sin nombre' }}
+          </button>
+        }
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-toast
+    class="pa-toast"
+    [isOpen]="toastOpen()"
+    [message]="toastMessage()"
+    duration="3500"
+    position="bottom"
+    [color]="toastColor()"
+    (didDismiss)="toastOpen.set(false)">
+  </ion-toast>
+</ion-content>

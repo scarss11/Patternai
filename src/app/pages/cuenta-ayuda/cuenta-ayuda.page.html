@@ -1,0 +1,27 @@
+<ion-header class="pa-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/cuenta" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Ayuda</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="pa-content">
+  @for (article of ayuda; track article.id; let i = $index) {
+    <button
+      type="button"
+      class="help-card list-enter"
+      [style.--i]="i"
+      (click)="openArticle(article.id)">
+      <span class="help-card__icon-wrap">
+        <ion-icon [name]="article.icon" aria-hidden="true"></ion-icon>
+      </span>
+      <div class="help-card__body">
+        <p class="help-card__title">{{ article.title }}</p>
+        <p class="help-card__cat">{{ article.category }}</p>
+      </div>
+      <ion-icon class="help-card__chev-ion" name="chevron-forward" aria-hidden="true"></ion-icon>
+    </button>
+  }
+</ion-content>

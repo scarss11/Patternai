@@ -1,2 +1,62 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
+// PatternAI · Design tokens (Rappi/DiDi layout · azul/morado)
+
+:root {
+  // Brand
+  --pa-primary: #0a84ff;
+  --pa-primary-dark: #0064d6;
+  --pa-primary-soft: #e9f2ff;
+  --pa-accent: #7c6cf0;
+  --pa-accent-soft: #efedff;
+  --pa-success: #2fb380;
+  --pa-success-soft: #ecfdf3;
+  --pa-warning: #ff9f0a;
+  --pa-warning-soft: #fff7e6;
+  --pa-danger: #ff3b30;
+  --pa-danger-soft: #fef2f2;
+  --pa-brand-gradient: linear-gradient(135deg, #0a84ff 0%, #7c6cf0 100%);
+
+  // Layout
+  --pa-page-gutter: 16px;
+  --pa-section-gap: 20px;
+
+  // Surfaces
+  --pa-bg: #f6f7f9;
+  --pa-surface: #ffffff;
+  --pa-surface-2: #f0f2f5;
+  --pa-border: #e6e9ee;
+
+  // Text
+  --pa-text: #14181f;
+  --pa-text-soft: #6b7280;
+  --pa-text-faint: #9aa3af;
+
+  // Radius & elevation
+  --pa-radius-sm: 12px;
+  --pa-radius-md: 16px;
+  --pa-radius-lg: 22px;
+  --pa-radius-xl: 24px;
+  --pa-shadow-sm: 0 2px 8px rgba(20, 24, 31, 0.06);
+  --pa-shadow-md: 0 8px 24px rgba(20, 24, 31, 0.08);
+  --pa-shadow-lg: 0 16px 40px rgba(20, 24, 31, 0.12);
+
+  // Typography
+  --pa-font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --pa-font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+
+  // Ionic mapping
+  --ion-background-color: var(--pa-bg);
+  --ion-text-color: var(--pa-text);
+  --ion-color-primary: var(--pa-primary);
+  --ion-color-primary-rgb: 10, 132, 255;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-shade: var(--pa-primary-dark);
+  --ion-color-primary-tint: #2490ff;
+  --ion-color-secondary: var(--pa-accent);
+  --ion-color-success: var(--pa-success);
+  --ion-color-warning: var(--pa-warning);
+  --ion-color-danger: var(--pa-danger);
+  --ion-toolbar-background: var(--pa-surface);
+  --ion-item-background: var(--pa-surface);
+  --ion-border-color: var(--pa-border);
+  --ion-placeholder-color: var(--pa-text-faint);
+}

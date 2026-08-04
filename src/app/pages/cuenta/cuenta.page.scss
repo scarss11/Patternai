@@ -1,0 +1,13 @@
+:host { display: block; }
+
+.logout-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+  padding-bottom: 16px;
+
+  ion-button {
+    width: auto;
+    min-width: 160px;
+  }
+}

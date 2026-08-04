@@ -1,0 +1,100 @@
+<ion-content
+  class="pa-content inicio-content"
+  [scrollEvents]="true"
+  (ionScroll)="onScroll($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="sec-h inicio-sec-h">
+    <h3>{{ sectionTitle }}</h3>
+    @if (!loading()) {
+      <span class="count-pill">{{ items().length }}</span>
+    }
+  </div>
+
+  @if (loading()) {
+    <div class="guide-grid">
+      @for (i of [0, 1]; track i) {
+        <div class="guide-tile guide-tile--skeleton">
+          <div class="skeleton-line w-60" style="height:44px;border-radius:14px"></div>
+          <div class="skeleton-line w-80 h-lg"></div>
+        </div>
+      }
+    </div>
+  } @else if (items().length > 0) {
+    <div class="guide-grid">
+      @for (item of items(); track item.guide.id; let i = $index) {
+        <button
+          type="button"
+          class="guide-tile list-enter"
+          [style.--i]="i"
+          (click)="openDetail(item.guide)">
+          <span class="guide-tile__icon">
+            <ion-icon name="document-text-outline" aria-hidden="true"></ion-icon>
+          </span>
+          <span class="guide-tile__title">{{ item.guide.title }}</span>
+          @if (isAdmin) {
+            <span class="vis-chip guide-tile__chip" [class]="visibilityBadge(item).css">
+              {{ visibilityBadge(item).label }}
+            </span>
+          }
+        </button>
+      }
+    </div>
+  } @else {
+    <div class="pa-empty pa-empty--compact">
+      <div class="pa-empty__icon">
+        <ion-icon name="document-text-outline" aria-hidden="true"></ion-icon>
+      </div>
+      <p class="pa-empty__text">Aún no hay guías en esta sección.</p>
+    </div>
+  }
+
+  <div class="primeros-pasos">
+    <div class="sec-h">
+      <h3>Primeros pasos</h3>
+    </div>
+    <p class="primeros-pasos__hint">
+      Aprende a usar PatternAI mientras creas tu contenido.
+    </p>
+    @for (article of ayuda; track article.id; let i = $index) {
+      <button
+        type="button"
+        class="help-card list-enter"
+        [style.--i]="i"
+        (click)="openAyuda(article.id)">
+        <span class="help-card__icon-wrap">
+          <ion-icon [name]="article.icon" aria-hidden="true"></ion-icon>
+        </span>
+        <div class="help-card__body">
+          <p class="help-card__title">{{ article.title }}</p>
+          <p class="help-card__cat">{{ article.category }}</p>
+        </div>
+        <ion-icon class="help-card__chev-ion" name="chevron-forward" aria-hidden="true"></ion-icon>
+      </button>
+    }
+  </div>
+
+  @if (!isAdmin) {
+    <div class="sec-h" style="margin-top:var(--pa-section-gap)">
+      <h3>Pestaña Guías</h3>
+    </div>
+    <div class="locked-banner">
+      <span class="locked-banner__icon">
+        <ion-icon name="lock-closed-outline" aria-hidden="true"></ion-icon>
+      </span>
+      <p class="locked-banner__text">Solo ves las guías compartidas contigo. Pídele acceso al catálogo a tu administrador.</p>
+    </div>
+  }
+</ion-content>
+
+<ion-toast
+  class="pa-toast"
+  [isOpen]="toastOpen()"
+  [message]="toastMessage()"
+  duration="3500"
+  position="bottom"
+  [color]="toastColor()"
+  (didDismiss)="toastOpen.set(false)">
+</ion-toast>

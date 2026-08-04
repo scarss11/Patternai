@@ -1,18 +1,27 @@
-import { Component, EnvironmentInjector, inject } from '@angular/core';
-import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { triangle, ellipse, square } from 'ionicons/icons';
+import { Component, inject } from '@angular/core';
+import { IonTabs, IonTabBar, IonTabButton, IonLabel, IonIcon } from '@ionic/angular/standalone';
+import { SupabaseService } from '../services/supabase.service';
 
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
-  imports: [IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel],
+  imports: [IonTabs, IonTabBar, IonTabButton, IonLabel, IonIcon],
 })
 export class TabsPage {
-  public environmentInjector = inject(EnvironmentInjector);
+  readonly sb = inject(SupabaseService);
 
-  constructor() {
-    addIcons({ triangle, ellipse, square });
+  get isAdmin(): boolean {
+    return this.sb.isAdmin;
+  }
+
+  get initials(): string {
+    const name = this.sb.profile$.value?.full_name ?? 'U';
+    return name
+      .split(' ')
+      .map((w) => w[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase();
   }
 }
