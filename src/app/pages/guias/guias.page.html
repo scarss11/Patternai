@@ -1,6 +1,6 @@
 <ion-header class="pa-header" [class.pa-header--compact]="headerCompact()">
   <ion-toolbar>
-    <ion-title>Guías</ion-title>
+    <ion-title>{{ 'guides.title' | t }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -13,7 +13,7 @@
     <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
     <input
       type="search"
-      [placeholder]="'Buscar en ' + totalCount + ' guías…'"
+      [placeholder]="'guides.search' | t:{ count: totalCount }"
       [value]="search()"
       (input)="search.set($any($event.target).value)" />
   </div>
@@ -24,7 +24,7 @@
         <span class="quick-access__circle primary">
           <ion-icon name="create-outline" aria-hidden="true"></ion-icon>
         </span>
-        <span class="quick-access__label">Crear guía</span>
+        <span class="quick-access__label">{{ 'guides.create' | t }}</span>
       </button>
     </div>
   }
@@ -43,11 +43,11 @@
       <div class="pa-empty__icon">
         <ion-icon name="library-outline" aria-hidden="true"></ion-icon>
       </div>
-      <h4 class="pa-empty__title">Catálogo vacío</h4>
-      <p class="pa-empty__text">Crea tu primera guía para que tu equipo tenga procedimientos a mano.</p>
+      <h4 class="pa-empty__title">{{ 'guides.emptyTitle' | t }}</h4>
+      <p class="pa-empty__text">{{ 'guides.emptyText' | t }}</p>
       @if (canCreate) {
         <div class="inline-action">
-          <ion-button class="pa-btn-lg solid" (click)="openCreate()">Crear guía</ion-button>
+          <ion-button class="pa-btn-lg solid" (click)="openCreate()">{{ 'guides.create' | t }}</ion-button>
         </div>
       }
     </div>
@@ -56,8 +56,8 @@
       <div class="pa-empty__icon">
         <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
       </div>
-      <h4 class="pa-empty__title">Sin resultados</h4>
-      <p class="pa-empty__text">No encontramos guías que coincidan con tu búsqueda.</p>
+      <h4 class="pa-empty__title">{{ 'guides.noResults' | t }}</h4>
+      <p class="pa-empty__text">{{ 'guides.noResultsText' | t }}</p>
     </div>
   } @else {
     <div class="guide-grid">
@@ -92,46 +92,57 @@
   <ng-template>
     <ion-content class="sheet-body">
       <div class="sheet-header">
-        <h2>Nueva guía</h2>
-        <p>Completa los datos y guarda</p>
+        <h2>{{ 'guides.newTitle' | t }}</h2>
+        <p>{{ 'guides.newHint' | t }}</p>
       </div>
 
       <ion-item lines="none" class="pa-form-item">
-        <ion-label position="stacked">Título</ion-label>
-        <ion-input [(ngModel)]="formTitle" placeholder="Ej. Configurar JWT en Express"></ion-input>
+        <ion-label position="stacked">{{ 'guides.fieldTitle' | t }}</ion-label>
+        <ion-input [(ngModel)]="formTitle" [placeholder]="'guides.titlePlaceholder' | t"></ion-input>
       </ion-item>
 
       <ion-item lines="none" class="pa-form-item">
-        <ion-label position="stacked">Categoría</ion-label>
+        <ion-label position="stacked">{{ 'guides.fieldCategory' | t }}</ion-label>
         <ion-select [(ngModel)]="formCategory" interface="popover">
-          @for (cat of categories; track cat) {
-            <ion-select-option [value]="cat">{{ cat }}</ion-select-option>
+          @for (cat of categoryKeys; track cat) {
+            <ion-select-option [value]="cat">{{ categoryLabel(cat) }}</ion-select-option>
           }
         </ion-select>
       </ion-item>
 
       <ion-item lines="none" class="pa-form-item">
-        <ion-label position="stacked">Visibilidad</ion-label>
+        <ion-label position="stacked">{{ 'guides.fieldVisibility' | t }}</ion-label>
         <ion-select [(ngModel)]="formVisibility" interface="popover">
-          <ion-select-option value="private">Privada</ion-select-option>
-          <ion-select-option value="shared">Compartida</ion-select-option>
-          <ion-select-option value="company">Empresa</ion-select-option>
+          <ion-select-option value="private">{{ 'visibility.private' | t }}</ion-select-option>
+          <ion-select-option value="shared">{{ 'visibility.shared' | t }}</ion-select-option>
+          <ion-select-option value="company">{{ 'visibility.company' | t }}</ion-select-option>
         </ion-select>
       </ion-item>
 
       <ion-item lines="none" class="pa-form-item">
-        <ion-label position="stacked">Contenido (Markdown)</ion-label>
+        <ion-label position="stacked">{{ 'guides.fieldContent' | t }}</ion-label>
         <ion-textarea
           [(ngModel)]="formContent"
-          placeholder="Escribe el contenido de la guía…"
+          [placeholder]="'guides.contentPlaceholder' | t"
           [autoGrow]="true"
           rows="8">
         </ion-textarea>
       </ion-item>
 
-      <div class="sheet-actions">
-        <ion-button class="pa-btn-lg solid" (click)="saveGuide()" [disabled]="saving()">
-          @if (saving()) { <ion-spinner name="crescent"></ion-spinner> } @else { Guardar guía }
+      <div class="sheet-actions sheet-actions--row">
+        <ion-button
+          class="pa-btn-lg outline"
+          (click)="generateWithAi()"
+          [disabled]="generatingAi() || saving()">
+          @if (generatingAi()) {
+            <ion-spinner name="crescent"></ion-spinner>
+          } @else {
+            <ion-icon slot="start" name="sparkles-outline" aria-hidden="true"></ion-icon>
+            {{ 'guides.generateAi' | t }}
+          }
+        </ion-button>
+        <ion-button class="pa-btn-lg solid" (click)="saveGuide()" [disabled]="saving() || generatingAi()">
+          @if (saving()) { <ion-spinner name="crescent"></ion-spinner> } @else { {{ 'guides.save' | t }} }
         </ion-button>
       </div>
     </ion-content>
@@ -149,12 +160,12 @@
   <ng-template>
     <ion-content class="sheet-body">
       <div class="sheet-header">
-        <h2>Compartir con…</h2>
-        <p>Elige un miembro del equipo</p>
+        <h2>{{ 'guides.shareWith' | t }}</h2>
+        <p>{{ 'guides.pickMember' | t }}</p>
       </div>
       @for (m of shareMembers(); track m.id) {
         <button type="button" class="sheet-member" (click)="pickShareMember(m)">
-          {{ m.full_name ?? 'Sin nombre' }}
+          {{ m.full_name ?? ('detail.noName' | t) }}
         </button>
       }
     </ion-content>

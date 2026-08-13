@@ -24,9 +24,10 @@ import {
   handleContentScroll,
   NotificationPrefs,
   saveNotificationPrefs,
-  setLanguage,
 } from '../../utils/preferences.util';
 import { feedbackTap, toastText } from '../../utils/ui-feedback.util';
+import { I18nService } from '../../services/i18n.service';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 interface SettingsRow {
   icon: string;
@@ -52,11 +53,13 @@ interface SettingsRow {
     IonRadio,
     IonToggle,
     IonToast,
+    TranslatePipe,
   ],
 })
 export class CuentaPage implements OnInit {
   private sb = inject(SupabaseService);
   private router = inject(Router);
+  private i18n = inject(I18nService);
 
   headerCompact = signal(false);
   orgName = signal('—');
@@ -69,40 +72,23 @@ export class CuentaPage implements OnInit {
   language: AppLanguage = 'es';
   notifPrefs: NotificationPrefs = getNotificationPrefs();
 
-  readonly settingsRows: SettingsRow[] = [
-    {
-      icon: 'help-circle-outline',
-      title: 'Ayuda',
-      action: () => this.openAyudaList(),
-    },
-    {
-      icon: 'language-outline',
-      title: 'Idioma',
-      action: () => this.openLanguage(),
-    },
-    {
-      icon: 'notifications-outline',
-      title: 'Notificaciones',
-      action: () => this.openNotifications(),
-    },
-    {
-      icon: 'document-text-outline',
-      title: 'Términos y condiciones',
-      action: () => this.openTerminos(),
-    },
-    {
-      icon: 'shield-checkmark-outline',
-      title: 'Política de privacidad',
-      action: () => this.openPrivacidad(),
-    },
-  ];
+  get settingsRows(): SettingsRow[] {
+    this.i18n.tick();
+    return [
+      { icon: 'help-circle-outline', title: this.i18n.t('account.help'), action: () => this.openAyudaList() },
+      { icon: 'language-outline', title: this.i18n.t('account.language'), action: () => this.openLanguage() },
+      { icon: 'notifications-outline', title: this.i18n.t('account.notifications'), action: () => this.openNotifications() },
+      { icon: 'document-text-outline', title: this.i18n.t('account.terms'), action: () => this.openTerminos() },
+      { icon: 'shield-checkmark-outline', title: this.i18n.t('account.privacy'), action: () => this.openPrivacidad() },
+    ];
+  }
 
   get profileName(): string {
-    return this.sb.profile$.value?.full_name ?? 'Usuario';
+    return this.sb.profile$.value?.full_name ?? this.i18n.t('common.user');
   }
 
   get roleLabel(): string {
-    return this.sb.isAdmin ? 'Administradora' : 'Miembro del equipo';
+    return this.sb.isAdmin ? this.i18n.t('account.roleAdmin') : this.i18n.t('account.roleMember');
   }
 
   get initials(): string {
@@ -119,7 +105,7 @@ export class CuentaPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.language = getLanguage();
+    this.language = this.i18n.lang();
     this.notifPrefs = getNotificationPrefs();
     await this.loadOrgName();
   }
@@ -131,7 +117,7 @@ export class CuentaPage implements OnInit {
   async loadOrgName() {
     const orgId = this.sb.profile$.value?.organization_id;
     if (!orgId) {
-      this.orgName.set('Sin empresa');
+      this.orgName.set(this.i18n.t('account.noOrg'));
       return;
     }
     const { data } = await this.sb.client
@@ -139,7 +125,7 @@ export class CuentaPage implements OnInit {
       .select('name')
       .eq('id', orgId)
       .single();
-    this.orgName.set(data?.name ?? 'Mi empresa');
+    this.orgName.set(data?.name ?? this.i18n.t('account.myCompany'));
   }
 
   openRow(row: SettingsRow) {
@@ -160,9 +146,9 @@ export class CuentaPage implements OnInit {
   }
 
   saveLanguage() {
-    setLanguage(this.language);
+    this.i18n.setLanguage(this.language);
     this.closeLanguage();
-    this.toastMessage.set('Idioma guardado.');
+    this.toastMessage.set(this.i18n.t('account.langSaved'));
     this.toastOpen.set(true);
   }
 
@@ -177,7 +163,7 @@ export class CuentaPage implements OnInit {
   saveNotifications() {
     saveNotificationPrefs(this.notifPrefs);
     this.closeNotifications();
-    this.toastMessage.set('Preferencias de notificación guardadas.');
+    this.toastMessage.set(this.i18n.t('account.notifSaved'));
     this.toastOpen.set(true);
   }
 
@@ -209,6 +195,6 @@ export class CuentaPage implements OnInit {
 
   private errorMessage(err: unknown): string {
     if (err instanceof Error) return err.message;
-    return 'No se pudo cerrar sesión.';
+    return this.i18n.t('common.logoutError');
   }
 }

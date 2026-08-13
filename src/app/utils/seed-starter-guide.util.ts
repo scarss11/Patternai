@@ -2,14 +2,14 @@ import { GuidesService } from '../services/guides.service';
 
 const STARTER_GUIDE_MD = `# Mi primera guía
 
-Esta es una **guía real** en PatternAI. Ábrela, edítala y compártela con tu equipo.
+Esta es una **guía real** en PatternAI. Ábrela, edítala y compártela con tu equipo — sirve para ventas, operaciones, soporte o cualquier área.
 
 ## Crear una guía
 
-1. Ve a la pestaña **Guías** y pulsa **Crear guía**.
-2. Escribe título, categoría y contenido en markdown.
-3. Elige visibilidad: **Privada**, **Compartida** o **Empresa**.
-4. Guarda: aparecerá en Inicio y en el catálogo.
+1. Ve a **Guías** y pulsa **Crear guía**.
+2. Escribe el **título** (ej. "Proceso de cierre de ventas" o "Onboarding de empleados").
+3. Pulsa **Generar con IA** para crear el borrador automáticamente, o escribe el contenido tú mismo.
+4. Elige categoría y visibilidad, y guarda.
 
 ## Editar esta guía
 

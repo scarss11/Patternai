@@ -26,15 +26,17 @@ import { GuidesService } from '../../services/guides.service';
 import { TeamService } from '../../services/team.service';
 import { ShareService } from '../../services/share.service';
 import { Guide, Profile, Visibility } from '../../models/models';
+import { CATEGORY_KEYS, DEFAULT_CATEGORY, CategoryKey } from '../../constants/categories';
 import { handleContentScroll } from '../../utils/preferences.util';
 import { feedbackError, feedbackSuccess, feedbackTap, toastText } from '../../utils/ui-feedback.util';
+import { I18nService } from '../../services/i18n.service';
+import { AiService } from '../../services/ai.service';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 export interface GuideCardItem {
   guide: Guide;
   shareCount?: number;
 }
-
-const CATEGORIES = ['Backend', 'Frontend', 'Infraestructura', 'General'] as const;
 
 @Component({
   selector: 'app-guias',
@@ -59,6 +61,7 @@ const CATEGORIES = ['Backend', 'Frontend', 'Infraestructura', 'General'] as cons
     IonSelect,
     IonSelectOption,
     IonTextarea,
+    TranslatePipe,
   ],
 })
 export class GuiasPage implements OnInit {
@@ -68,8 +71,10 @@ export class GuiasPage implements OnInit {
   private shareSvc = inject(ShareService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private i18n = inject(I18nService);
+  private aiSvc = inject(AiService);
 
-  readonly categories = CATEGORIES;
+  readonly categoryKeys = CATEGORY_KEYS;
 
   items = signal<GuideCardItem[]>([]);
   search = signal('');
@@ -81,12 +86,13 @@ export class GuiasPage implements OnInit {
   shareMembers = signal<Profile[]>([]);
   shareTargetGuide = signal<Guide | null>(null);
   saving = signal(false);
+  generatingAi = signal(false);
   toastOpen = signal(false);
   toastMessage = signal('');
   toastColor = signal<'danger' | 'success'>('danger');
 
   formTitle = '';
-  formCategory = 'General';
+  formCategory: CategoryKey = DEFAULT_CATEGORY;
   formVisibility: Visibility = 'private';
   formContent = '';
 
@@ -163,7 +169,7 @@ export class GuiasPage implements OnInit {
     const title = this.formTitle.trim();
     const content_md = this.formContent.trim();
     if (!title || !content_md) {
-      this.showToast('Completa el título y el contenido.');
+      this.showToast(this.i18n.t('guides.fillRequired'));
       return;
     }
 
@@ -171,7 +177,7 @@ export class GuiasPage implements OnInit {
     try {
       await this.guidesSvc.create({
         title,
-        category: this.formCategory.toLowerCase(),
+        category: this.formCategory,
         content_md,
         visibility: this.formVisibility,
       });
@@ -179,11 +185,45 @@ export class GuiasPage implements OnInit {
       this.resetForm();
       await this.load();
       await feedbackSuccess();
-      this.showToast('Guía creada correctamente.', false);
+      this.showToast(this.i18n.t('guides.created'), false);
     } catch (err) {
       this.showToast(this.errorMessage(err));
     } finally {
       this.saving.set(false);
+    }
+  }
+
+  async generateWithAi() {
+    const title = this.formTitle.trim();
+    if (!title) {
+      this.showToast(this.i18n.t('guides.aiNeedsTitle'));
+      return;
+    }
+
+    this.generatingAi.set(true);
+    try {
+      void feedbackTap();
+      const content = await this.aiSvc.generateGuideContent({
+        title,
+        category: this.formCategory,
+        language: this.i18n.lang(),
+      });
+      this.formContent = content;
+      await feedbackSuccess();
+      this.showToast(this.i18n.t('guides.aiSuccess'), false);
+    } catch (err) {
+      let msg = this.i18n.t('guides.aiError');
+      if (err instanceof Error) {
+        if (err.message === 'NOT_CONFIGURED') msg = this.i18n.t('guides.aiNotConfigured');
+        else if (err.message.includes('quota') || err.message.includes('Quota') || err.message.includes('429')) {
+          msg = this.i18n.t('guides.aiQuota');
+        } else if (err.message !== 'NOT_AUTHENTICATED' && err.message !== 'EMPTY_RESPONSE') {
+          msg = err.message;
+        }
+      }
+      this.showToast(msg);
+    } finally {
+      this.generatingAi.set(false);
     }
   }
 
@@ -196,14 +236,14 @@ export class GuiasPage implements OnInit {
     if (guide.visibility === 'shared') {
       const n = shareCount ?? 0;
       return {
-        label: n === 1 ? '1 persona' : `${n} personas`,
+        label: n === 1 ? this.i18n.t('visibility.onePerson') : this.i18n.t('visibility.nPeople', { count: n }),
         css: 'shared',
       };
     }
     if (guide.visibility === 'company') {
-      return { label: 'Empresa', css: 'company' };
+      return { label: this.i18n.t('visibility.company'), css: 'company' };
     }
-    return { label: 'Privada', css: 'private' };
+    return { label: this.i18n.t('visibility.private'), css: 'private' };
   }
 
   subtitle(guide: Guide): string {
@@ -273,7 +313,7 @@ export class GuiasPage implements OnInit {
 
   private resetForm() {
     this.formTitle = '';
-    this.formCategory = 'General';
+    this.formCategory = DEFAULT_CATEGORY;
     this.formVisibility = 'private';
     this.formContent = '';
   }
@@ -301,12 +341,15 @@ export class GuiasPage implements OnInit {
     if (typeof err === 'object' && err !== null && 'message' in err) {
       return String((err as { message: unknown }).message);
     }
-    return 'Ocurrió un error inesperado.';
+    return this.i18n.t('common.unexpectedError');
+  }
+
+  categoryLabel(key: CategoryKey): string {
+    return this.i18n.categoryLabel(key);
   }
 
   private formatCategory(category: string): string {
-    if (!category) return 'General';
-    return category.charAt(0).toUpperCase() + category.slice(1);
+    return this.i18n.categoryLabel(category);
   }
 
   private timeAgo(iso: string): string {

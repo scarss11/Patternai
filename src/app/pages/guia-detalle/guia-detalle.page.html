@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/inicio" text=""></ion-back-button>
     </ion-buttons>
-    <ion-title>Guía</ion-title>
+    <ion-title>{{ 'detail.title' | t }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -23,9 +23,9 @@
       <div class="pa-empty__icon">
         <ion-icon name="alert-circle-outline" aria-hidden="true"></ion-icon>
       </div>
-      <h2>No se pudo cargar la guía</h2>
+      <h2>{{ 'detail.loadError' | t }}</h2>
       <p>{{ loadError() }}</p>
-      <ion-button class="pa-btn outline" routerLink="/tabs/inicio">Volver al inicio</ion-button>
+      <ion-button class="pa-btn outline" routerLink="/tabs/inicio">{{ 'detail.backHome' | t }}</ion-button>
     </div>
   } @else if (guide(); as g) {
     <div class="detail-hero list-enter">
@@ -40,18 +40,18 @@
 
     <div class="actions-bar list-enter" [style.--i]="2">
       @if (canDownload) {
-        <button type="button" class="icon-btn" (click)="onPdf()" [disabled]="actionLoading()">PDF</button>
+        <button type="button" class="icon-btn" (click)="onPdf()" [disabled]="actionLoading()">{{ 'detail.pdf' | t }}</button>
       }
       @if (canShare) {
-        <button type="button" class="icon-btn" (click)="onShareMember()" [disabled]="actionLoading()">Compartir</button>
-        <button type="button" class="icon-btn primary" (click)="onShareLink()" [disabled]="actionLoading()">Enlace</button>
+        <button type="button" class="icon-btn" (click)="onShareMember()" [disabled]="actionLoading()">{{ 'detail.share' | t }}</button>
+        <button type="button" class="icon-btn primary" (click)="onShareLink()" [disabled]="actionLoading()">{{ 'detail.link' | t }}</button>
       }
     </div>
 
     @if (canEdit) {
       <div class="manage-bar list-enter" [style.--i]="3">
-        <ion-button class="pa-btn-lg outline" (click)="openEdit()" [disabled]="actionLoading()">Editar</ion-button>
-        <ion-button color="danger" fill="outline" class="pa-btn-lg" (click)="confirmDelete()" [disabled]="actionLoading()">Eliminar</ion-button>
+        <ion-button class="pa-btn-lg outline" (click)="openEdit()" [disabled]="actionLoading()">{{ 'detail.edit' | t }}</ion-button>
+        <ion-button color="danger" fill="outline" class="pa-btn-lg" (click)="confirmDelete()" [disabled]="actionLoading()">{{ 'detail.delete' | t }}</ion-button>
       </div>
     }
   }
@@ -66,41 +66,49 @@
     <ng-template>
       <ion-content class="sheet-body">
         <div class="sheet-header">
-          <h2>Editar guía</h2>
-          <p>Actualiza título, visibilidad o contenido</p>
+          <h2>{{ 'detail.editTitle' | t }}</h2>
+          <p>{{ 'detail.editHint' | t }}</p>
         </div>
 
         <ion-item lines="none" class="pa-form-item">
-          <ion-label position="stacked">Título</ion-label>
+          <ion-label position="stacked">{{ 'guides.fieldTitle' | t }}</ion-label>
           <ion-input [(ngModel)]="formTitle"></ion-input>
         </ion-item>
 
         <ion-item lines="none" class="pa-form-item">
-          <ion-label position="stacked">Categoría</ion-label>
+          <ion-label position="stacked">{{ 'guides.fieldCategory' | t }}</ion-label>
           <ion-select [(ngModel)]="formCategory" interface="popover">
-            @for (cat of categories; track cat) {
-              <ion-select-option [value]="cat">{{ cat }}</ion-select-option>
+            @for (cat of categoryKeys; track cat) {
+              <ion-select-option [value]="cat">{{ categoryLabel(cat) }}</ion-select-option>
             }
           </ion-select>
         </ion-item>
 
         <ion-item lines="none" class="pa-form-item">
-          <ion-label position="stacked">Visibilidad</ion-label>
+          <ion-label position="stacked">{{ 'guides.fieldVisibility' | t }}</ion-label>
           <ion-select [(ngModel)]="formVisibility" interface="popover">
-            <ion-select-option value="private">Privada</ion-select-option>
-            <ion-select-option value="shared">Compartida</ion-select-option>
-            <ion-select-option value="company">Empresa</ion-select-option>
+            <ion-select-option value="private">{{ 'visibility.private' | t }}</ion-select-option>
+            <ion-select-option value="shared">{{ 'visibility.shared' | t }}</ion-select-option>
+            <ion-select-option value="company">{{ 'visibility.company' | t }}</ion-select-option>
           </ion-select>
         </ion-item>
 
         <ion-item lines="none" class="pa-form-item">
-          <ion-label position="stacked">Contenido (Markdown)</ion-label>
+          <ion-label position="stacked">{{ 'guides.fieldContent' | t }}</ion-label>
           <ion-textarea [(ngModel)]="formContent" [autoGrow]="true" rows="8"></ion-textarea>
         </ion-item>
 
-        <div class="sheet-actions">
-          <ion-button class="pa-btn-lg solid" (click)="saveEdit()" [disabled]="saving()">
-            @if (saving()) { <ion-spinner name="crescent"></ion-spinner> } @else { Guardar cambios }
+        <div class="sheet-actions sheet-actions--row">
+          <ion-button class="pa-btn-lg outline" (click)="generateWithAi()" [disabled]="generatingAi() || saving()">
+            @if (generatingAi()) {
+              <ion-spinner name="crescent"></ion-spinner>
+            } @else {
+              <ion-icon slot="start" name="sparkles-outline" aria-hidden="true"></ion-icon>
+              {{ 'guides.generateAi' | t }}
+            }
+          </ion-button>
+          <ion-button class="pa-btn-lg solid" (click)="saveEdit()" [disabled]="saving() || generatingAi()">
+            @if (saving()) { <ion-spinner name="crescent"></ion-spinner> } @else { {{ 'detail.saveChanges' | t }} }
           </ion-button>
         </div>
       </ion-content>
@@ -117,12 +125,12 @@
     <ng-template>
       <ion-content class="sheet-body">
         <div class="sheet-header">
-          <h2>Compartir con…</h2>
-          <p>Elige un miembro del equipo</p>
+          <h2>{{ 'guides.shareWith' | t }}</h2>
+          <p>{{ 'guides.pickMember' | t }}</p>
         </div>
         @for (m of shareMembers(); track m.id) {
           <button type="button" class="sheet-member" (click)="pickShareMember(m)">
-            {{ m.full_name ?? 'Sin nombre' }}
+            {{ m.full_name ?? ('detail.noName' | t) }}
           </button>
         }
       </ion-content>

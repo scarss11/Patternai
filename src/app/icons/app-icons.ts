@@ -19,6 +19,7 @@ import {
   personCircleOutline,
   searchOutline,
   shareSocialOutline,
+  sparklesOutline,
   shieldCheckmarkOutline,
 } from 'ionicons/icons';
 
@@ -42,5 +43,6 @@ addIcons({
   'person-circle-outline': personCircleOutline,
   'search-outline': searchOutline,
   'share-social-outline': shareSocialOutline,
+  'sparkles-outline': sparklesOutline,
   'shield-checkmark-outline': shieldCheckmarkOutline,
 });

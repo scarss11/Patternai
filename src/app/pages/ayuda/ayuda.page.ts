@@ -13,6 +13,7 @@ import {
 } from '@ionic/angular/standalone';
 import { marked } from 'marked';
 import { getAyudaById } from '../../data/ayuda';
+import { I18nService } from '../../services/i18n.service';
 
 @Component({
   selector: 'app-ayuda',
@@ -33,6 +34,7 @@ import { getAyudaById } from '../../data/ayuda';
 export class AyudaPage implements OnInit {
   private route = inject(ActivatedRoute);
   private sanitizer = inject(DomSanitizer);
+  private i18n = inject(I18nService);
 
   title = signal('');
   category = signal('');
@@ -41,7 +43,7 @@ export class AyudaPage implements OnInit {
 
   async ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id') ?? '';
-    const article = getAyudaById(id);
+    const article = getAyudaById(id, this.i18n.lang());
     if (!article) {
       this.notFound.set(true);
       return;

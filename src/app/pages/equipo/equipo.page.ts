@@ -26,6 +26,8 @@ import { TeamService } from '../../services/team.service';
 import { MemberPermissions, Profile, Role } from '../../models/models';
 import { handleContentScroll } from '../../utils/preferences.util';
 import { feedbackError, feedbackSuccess, feedbackTap, toastText } from '../../utils/ui-feedback.util';
+import { I18nService } from '../../services/i18n.service';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 const AVATAR_COLORS = ['#0a84ff', '#7c6cf0', '#2fb380', '#ff9f0a'];
 
@@ -52,12 +54,14 @@ const AVATAR_COLORS = ['#0a84ff', '#7c6cf0', '#2fb380', '#ff9f0a'];
     IonSelect,
     IonSelectOption,
     IonToggle,
+    TranslatePipe,
   ],
 })
 export class EquipoPage implements OnInit {
   private sb = inject(SupabaseService);
   private team = inject(TeamService);
   private route = inject(ActivatedRoute);
+  private i18n = inject(I18nService);
 
   members = signal<Profile[]>([]);
   selectedMember = signal<Profile | null>(null);
@@ -171,12 +175,12 @@ export class EquipoPage implements OnInit {
   }
 
   roleLabel(member: Profile): string {
-    return member.role === 'admin' ? 'Administradora' : 'Miembro';
+    return member.role === 'admin' ? this.i18n.t('team.roleAdmin') : this.i18n.t('team.roleMember');
   }
 
   statusLabel(member: Profile): string | null {
-    if (member.status === 'pending') return 'Pendiente';
-    if (member.status === 'disabled') return 'Desactivado';
+    if (member.status === 'pending') return this.i18n.t('team.statusPending');
+    if (member.status === 'disabled') return this.i18n.t('team.statusDisabled');
     return null;
   }
 

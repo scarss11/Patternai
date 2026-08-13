@@ -1,6 +1,6 @@
 <ion-header class="pa-header" [class.pa-header--compact]="headerCompact()">
   <ion-toolbar>
-    <ion-title>Equipo</ion-title>
+    <ion-title>{{ 'team.title' | t }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -10,7 +10,7 @@
   </ion-refresher>
 
   <div class="sec-h">
-    <h3>Miembros vinculados</h3>
+    <h3>{{ 'team.members' | t }}</h3>
     @if (!loading()) {
       <span class="count-pill">{{ members().length }}</span>
     }
@@ -22,7 +22,7 @@
         <span class="quick-access__circle accent">
           <ion-icon name="person-add-outline" aria-hidden="true"></ion-icon>
         </span>
-        <span class="quick-access__label">Invitar usuario</span>
+        <span class="quick-access__label">{{ 'team.inviteUser' | t }}</span>
       </button>
     </div>
   }
@@ -39,11 +39,11 @@
       <div class="pa-empty__icon">
         <ion-icon name="mail-outline" aria-hidden="true"></ion-icon>
       </div>
-      <h4 class="pa-empty__title">Sin miembros todavía</h4>
-      <p class="pa-empty__text">Invita a alguien para que acceda a las guías compartidas.</p>
+      <h4 class="pa-empty__title">{{ 'team.emptyTitle' | t }}</h4>
+      <p class="pa-empty__text">{{ 'team.emptyText' | t }}</p>
       @if (isAdmin) {
         <div class="inline-action">
-          <ion-button class="pa-btn-lg solid" (click)="openInvite()">Invitar miembro</ion-button>
+          <ion-button class="pa-btn-lg solid" (click)="openInvite()">{{ 'team.inviteMember' | t }}</ion-button>
         </div>
       }
     </div>
@@ -59,7 +59,7 @@
           {{ memberInitials(member) }}
         </div>
         <div class="member-row__info">
-          <p class="member-row__name">{{ member.full_name ?? 'Sin nombre' }}</p>
+          <p class="member-row__name">{{ member.full_name ?? ('detail.noName' | t) }}</p>
           @if (statusLabel(member); as status) {
             <p class="member-row__role">{{ status }}</p>
           } @else {
@@ -86,40 +86,40 @@
   <ng-template>
     <ion-content class="sheet-body">
       <div class="sheet-header">
-        <h2>Invitar miembro</h2>
-        <p>Envía una invitación por email</p>
+        <h2>{{ 'team.inviteTitle' | t }}</h2>
+        <p>{{ 'team.inviteHint' | t }}</p>
       </div>
 
       <ion-item lines="none" class="pa-form-item">
-        <ion-label position="stacked">Email</ion-label>
-        <ion-input type="email" [(ngModel)]="inviteEmail" placeholder="persona@empresa.com"></ion-input>
+        <ion-label position="stacked">{{ 'auth.email' | t }}</ion-label>
+        <ion-input type="email" [(ngModel)]="inviteEmail" [placeholder]="'auth.emailPlaceholder' | t"></ion-input>
       </ion-item>
 
       <ion-item lines="none" class="pa-form-item">
-        <ion-label position="stacked">Rol</ion-label>
+        <ion-label position="stacked">{{ 'team.role' | t }}</ion-label>
         <ion-select [(ngModel)]="inviteRole" interface="popover">
-          <ion-select-option value="member">Miembro</ion-select-option>
-          <ion-select-option value="admin">Administrador</ion-select-option>
+          <ion-select-option value="member">{{ 'team.member' | t }}</ion-select-option>
+          <ion-select-option value="admin">{{ 'team.admin' | t }}</ion-select-option>
         </ion-select>
       </ion-item>
 
-      <div class="perm-section-label">Permisos iniciales</div>
+      <div class="perm-section-label">{{ 'team.initialPerms' | t }}</div>
       <div class="perm-row">
-        <span>Descargar PDF</span>
+        <span>{{ 'team.permDownload' | t }}</span>
         <ion-toggle [(ngModel)]="inviteCanDownload"></ion-toggle>
       </div>
       <div class="perm-row">
-        <span>Compartir</span>
+        <span>{{ 'team.permShare' | t }}</span>
         <ion-toggle [(ngModel)]="inviteCanShare"></ion-toggle>
       </div>
       <div class="perm-row">
-        <span>Crear guías</span>
+        <span>{{ 'team.permCreate' | t }}</span>
         <ion-toggle [(ngModel)]="inviteCanCreate"></ion-toggle>
       </div>
 
       <div class="sheet-actions">
         <ion-button class="pa-btn-lg solid" (click)="confirmInvite()" [disabled]="saving()">
-          @if (saving()) { <ion-spinner name="crescent"></ion-spinner> } @else { Enviar invitación }
+          @if (saving()) { <ion-spinner name="crescent"></ion-spinner> } @else { {{ 'team.sendInvite' | t }} }
         </ion-button>
       </div>
     </ion-content>
@@ -138,30 +138,30 @@
     @if (selectedMember(); as sel) {
       <ion-content class="sheet-body">
         <div class="sheet-header">
-          <h2>Permisos</h2>
-          <p>{{ sel.full_name ?? 'Sin nombre' }}</p>
+          <h2>{{ 'team.permissions' | t }}</h2>
+          <p>{{ sel.full_name ?? ('detail.noName' | t) }}</p>
         </div>
 
         <div class="perm-row">
-          <span>Ver guías compartidas</span>
+          <span>{{ 'team.permViewShared' | t }}</span>
           <ion-toggle [checked]="sel.can_view_shared" [disabled]="saving()" (ionChange)="onPermissionChange('can_view_shared', $event.detail.checked)"></ion-toggle>
         </div>
         <div class="perm-row">
-          <span>Descargar PDF</span>
+          <span>{{ 'team.permDownload' | t }}</span>
           <ion-toggle [checked]="sel.can_download" [disabled]="saving()" (ionChange)="onPermissionChange('can_download', $event.detail.checked)"></ion-toggle>
         </div>
         <div class="perm-row">
-          <span>Compartir por enlace</span>
+          <span>{{ 'team.permShareLink' | t }}</span>
           <ion-toggle [checked]="sel.can_share" [disabled]="saving()" (ionChange)="onPermissionChange('can_share', $event.detail.checked)"></ion-toggle>
         </div>
         <div class="perm-row">
-          <span>Crear guías nuevas</span>
+          <span>{{ 'team.permCreateNew' | t }}</span>
           <ion-toggle [checked]="sel.can_create_guides" [disabled]="saving()" (ionChange)="onPermissionChange('can_create_guides', $event.detail.checked)"></ion-toggle>
         </div>
 
         <div class="sheet-actions">
           <ion-button class="pa-btn-lg outline" [disabled]="saving()" (click)="toggleMemberStatus()">
-            {{ sel.status === 'disabled' ? 'Activar miembro' : 'Desactivar miembro' }}
+            {{ sel.status === 'disabled' ? ('team.activate' | t) : ('team.deactivate' | t) }}
           </ion-button>
         </div>
       </ion-content>

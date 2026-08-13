@@ -9,6 +9,7 @@ import { SupabaseService } from '../../services/supabase.service';
 import { GuidesService } from '../../services/guides.service';
 import { seedStarterGuide } from '../../utils/seed-starter-guide.util';
 import { feedbackError, feedbackSuccess, toastText } from '../../utils/ui-feedback.util';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 type AuthMode = 'login' | 'register' | 'organization';
 
@@ -16,7 +17,7 @@ type AuthMode = 'login' | 'register' | 'organization';
   selector: 'app-auth',
   templateUrl: './auth.page.html',
   styleUrls: ['./auth.page.scss'],
-  imports: [FormsModule, IonContent, IonButton, IonSpinner, IonToast],
+  imports: [FormsModule, IonContent, IonButton, IonSpinner, IonToast, TranslatePipe],
 })
 export class AuthPage implements OnInit {
   private sb = inject(SupabaseService);

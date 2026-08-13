@@ -47,17 +47,15 @@
       <div class="pa-empty__icon">
         <ion-icon name="document-text-outline" aria-hidden="true"></ion-icon>
       </div>
-      <p class="pa-empty__text">Aún no hay guías en esta sección.</p>
+      <p class="pa-empty__text">{{ 'home.emptySection' | t }}</p>
     </div>
   }
 
   <div class="primeros-pasos">
     <div class="sec-h">
-      <h3>Primeros pasos</h3>
+      <h3>{{ 'home.firstSteps' | t }}</h3>
     </div>
-    <p class="primeros-pasos__hint">
-      Aprende a usar PatternAI mientras creas tu contenido.
-    </p>
+    <p class="primeros-pasos__hint">{{ 'home.firstStepsHint' | t }}</p>
     @for (article of ayuda; track article.id; let i = $index) {
       <button
         type="button"
@@ -78,13 +76,13 @@
 
   @if (!isAdmin) {
     <div class="sec-h" style="margin-top:var(--pa-section-gap)">
-      <h3>Pestaña Guías</h3>
+      <h3>{{ 'home.guidesTab' | t }}</h3>
     </div>
     <div class="locked-banner">
       <span class="locked-banner__icon">
         <ion-icon name="lock-closed-outline" aria-hidden="true"></ion-icon>
       </span>
-      <p class="locked-banner__text">Solo ves las guías compartidas contigo. Pídele acceso al catálogo a tu administrador.</p>
+      <p class="locked-banner__text">{{ 'home.lockedBanner' | t }}</p>
     </div>
   }
 </ion-content>

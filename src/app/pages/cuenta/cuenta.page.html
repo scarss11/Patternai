@@ -1,6 +1,6 @@
 <ion-header class="pa-header" [class.pa-header--compact]="headerCompact()">
   <ion-toolbar>
-    <ion-title>Cuenta</ion-title>
+    <ion-title>{{ 'account.title' | t }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -15,7 +15,7 @@
   </div>
 
   <div class="sec-h">
-    <h3>Ajustes</h3>
+    <h3>{{ 'account.settings' | t }}</h3>
   </div>
 
   @for (row of settingsRows; track row.title; let i = $index) {
@@ -40,7 +40,7 @@
       [disabled]="loggingOut()"
       (click)="logout()">
       <ion-icon slot="start" name="log-out-outline" aria-hidden="true"></ion-icon>
-      Cerrar sesión
+      {{ 'account.logout' | t }}
     </ion-button>
   </div>
 
@@ -54,19 +54,19 @@
     <ng-template>
       <ion-content class="sheet-body">
         <div class="sheet-header">
-          <h2>Idioma</h2>
-          <p>Elige tu idioma preferido</p>
+          <h2>{{ 'account.langTitle' | t }}</h2>
+          <p>{{ 'account.langHint' | t }}</p>
         </div>
         <ion-radio-group [(ngModel)]="language">
           <ion-item lines="none" class="pa-form-item">
-            <ion-radio value="es" labelPlacement="end">Español</ion-radio>
+            <ion-radio value="es" labelPlacement="end">{{ 'account.spanish' | t }}</ion-radio>
           </ion-item>
           <ion-item lines="none" class="pa-form-item">
-            <ion-radio value="en" labelPlacement="end">English</ion-radio>
+            <ion-radio value="en" labelPlacement="end">{{ 'account.english' | t }}</ion-radio>
           </ion-item>
         </ion-radio-group>
         <div class="sheet-actions">
-          <ion-button class="pa-btn-lg solid" (click)="saveLanguage()">Guardar</ion-button>
+          <ion-button class="pa-btn-lg solid" (click)="saveLanguage()">{{ 'account.save' | t }}</ion-button>
         </div>
       </ion-content>
     </ng-template>
@@ -82,23 +82,23 @@
     <ng-template>
       <ion-content class="sheet-body">
         <div class="sheet-header">
-          <h2>Notificaciones</h2>
-          <p>Preferencias locales (placeholder)</p>
+          <h2>{{ 'account.notifTitle' | t }}</h2>
+          <p>{{ 'account.notifHint' | t }}</p>
         </div>
         <div class="perm-row">
-          <span>Guía compartida contigo</span>
+          <span>{{ 'account.notifShared' | t }}</span>
           <ion-toggle [(ngModel)]="notifPrefs.guideShared"></ion-toggle>
         </div>
         <div class="perm-row">
-          <span>Actualizaciones del equipo</span>
+          <span>{{ 'account.notifTeam' | t }}</span>
           <ion-toggle [(ngModel)]="notifPrefs.teamUpdates"></ion-toggle>
         </div>
         <div class="perm-row">
-          <span>Novedades de PatternAI</span>
+          <span>{{ 'account.notifNews' | t }}</span>
           <ion-toggle [(ngModel)]="notifPrefs.productNews"></ion-toggle>
         </div>
         <div class="sheet-actions">
-          <ion-button class="pa-btn-lg solid" (click)="saveNotifications()">Guardar</ion-button>
+          <ion-button class="pa-btn-lg solid" (click)="saveNotifications()">{{ 'account.save' | t }}</ion-button>
         </div>
       </ion-content>
     </ng-template>

@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { IonTabs, IonTabBar, IonTabButton, IonLabel, IonIcon } from '@ionic/angular/standalone';
 import { SupabaseService } from '../services/supabase.service';
+import { TranslatePipe } from '../pipes/translate.pipe';
 
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
-  imports: [IonTabs, IonTabBar, IonTabButton, IonLabel, IonIcon],
+  imports: [IonTabs, IonTabBar, IonTabButton, IonLabel, IonIcon, TranslatePipe],
 })
 export class TabsPage {
   readonly sb = inject(SupabaseService);

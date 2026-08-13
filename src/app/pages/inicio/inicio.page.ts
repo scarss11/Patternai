@@ -11,8 +11,10 @@ import {
 import { SupabaseService } from '../../services/supabase.service';
 import { GuidesService } from '../../services/guides.service';
 import { Guide, Visibility } from '../../models/models';
-import { AYUDA_ARTICULOS } from '../../data/ayuda';
+import { getAyudaArticles } from '../../data/ayuda';
 import { feedbackError, feedbackTap, toastText } from '../../utils/ui-feedback.util';
+import { I18nService } from '../../services/i18n.service';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 export interface GuideCardItem {
   guide: Guide;
@@ -29,14 +31,19 @@ export interface GuideCardItem {
     IonRefresherContent,
     IonIcon,
     IonToast,
+    TranslatePipe,
   ],
 })
 export class InicioPage implements OnInit {
   private sb = inject(SupabaseService);
   private guidesSvc = inject(GuidesService);
   private router = inject(Router);
+  private i18n = inject(I18nService);
 
-  readonly ayuda = AYUDA_ARTICULOS;
+  get ayuda() {
+    this.i18n.tick();
+    return getAyudaArticles(this.i18n.lang());
+  }
 
   items = signal<GuideCardItem[]>([]);
   loading = signal(true);
@@ -49,7 +56,7 @@ export class InicioPage implements OnInit {
   }
 
   get sectionTitle(): string {
-    return this.isAdmin ? 'Tus guías creadas' : 'Compartidas contigo';
+    return this.isAdmin ? this.i18n.t('home.myGuides') : this.i18n.t('home.sharedWithMe');
   }
 
   async ngOnInit() {
@@ -105,14 +112,14 @@ export class InicioPage implements OnInit {
     if (guide.visibility === 'shared') {
       const n = shareCount ?? 0;
       return {
-        label: n === 1 ? '1 persona' : `${n} personas`,
+        label: n === 1 ? this.i18n.t('visibility.onePerson') : this.i18n.t('visibility.nPeople', { count: n }),
         css: 'shared',
       };
     }
     if (guide.visibility === 'company') {
-      return { label: 'Empresa', css: 'company' };
+      return { label: this.i18n.t('visibility.company'), css: 'company' };
     }
-    return { label: 'Privada', css: 'private' };
+    return { label: this.i18n.t('visibility.private'), css: 'private' };
   }
 
   private showToast(message: string, isError = true) {

@@ -2,7 +2,7 @@
   <div class="auth-brand">
     <div class="auth-brand__logo">P</div>
     <h1 class="auth-brand__title">PatternAI</h1>
-    <p class="auth-brand__sub">Guías técnicas para tu equipo</p>
+    <p class="auth-brand__sub">{{ 'auth.tagline' | t }}</p>
   </div>
 
   <div class="auth-card">
@@ -12,76 +12,76 @@
           type="button"
           [class.active]="mode() === 'login'"
           (click)="setMode('login')">
-          Iniciar sesión
+          {{ 'auth.login' | t }}
         </button>
         <button
           type="button"
           [class.active]="mode() === 'register'"
           (click)="setMode('register')">
-          Registrarse
+          {{ 'auth.register' | t }}
         </button>
       </div>
     }
 
     @switch (mode()) {
       @case ('login') {
-        <h2 class="pa-section-title" style="margin-top:0">Bienvenido</h2>
-        <p style="color:var(--pa-text-soft);margin:-8px 0 16px;font-size:0.9rem">Accede con tu cuenta de la empresa</p>
+        <h2 class="pa-section-title" style="margin-top:0">{{ 'auth.welcome' | t }}</h2>
+        <p style="color:var(--pa-text-soft);margin:-8px 0 16px;font-size:0.9rem">{{ 'auth.loginHint' | t }}</p>
 
         <div class="pa-field">
-          <label for="login-email">Email</label>
-          <input id="login-email" type="email" placeholder="tu@empresa.com" [(ngModel)]="email" autocomplete="email" />
+          <label for="login-email">{{ 'auth.email' | t }}</label>
+          <input id="login-email" type="email" [placeholder]="'auth.emailPlaceholder' | t" [(ngModel)]="email" autocomplete="email" />
         </div>
         <div class="pa-field">
-          <label for="login-password">Contraseña</label>
+          <label for="login-password">{{ 'auth.password' | t }}</label>
           <input id="login-password" type="password" placeholder="••••••••" [(ngModel)]="password" autocomplete="current-password" (keyup.enter)="signIn()" />
         </div>
 
         <ion-button expand="block" class="pa-btn-lg solid" (click)="signIn()" [disabled]="loading()">
-          @if (loading()) { <ion-spinner name="crescent"></ion-spinner> } @else { Entrar }
+          @if (loading()) { <ion-spinner name="crescent"></ion-spinner> } @else { {{ 'auth.enter' | t }} }
         </ion-button>
       }
 
       @case ('register') {
-        <h2 class="pa-section-title" style="margin-top:0">Crear cuenta</h2>
-        <p style="color:var(--pa-text-soft);margin:-8px 0 16px;font-size:0.9rem">Regístrate para empezar con PatternAI</p>
+        <h2 class="pa-section-title" style="margin-top:0">{{ 'auth.createAccount' | t }}</h2>
+        <p style="color:var(--pa-text-soft);margin:-8px 0 16px;font-size:0.9rem">{{ 'auth.registerHint' | t }}</p>
 
         <div class="pa-field">
-          <label for="register-name">Nombre completo</label>
-          <input id="register-name" type="text" placeholder="María Jiménez" [(ngModel)]="fullName" autocomplete="name" />
+          <label for="register-name">{{ 'auth.fullName' | t }}</label>
+          <input id="register-name" type="text" [placeholder]="'auth.namePlaceholder' | t" [(ngModel)]="fullName" autocomplete="name" />
         </div>
         <div class="pa-field">
-          <label for="register-email">Email</label>
-          <input id="register-email" type="email" placeholder="tu@empresa.com" [(ngModel)]="email" autocomplete="email" />
+          <label for="register-email">{{ 'auth.email' | t }}</label>
+          <input id="register-email" type="email" [placeholder]="'auth.emailPlaceholder' | t" [(ngModel)]="email" autocomplete="email" />
         </div>
         <div class="pa-field">
-          <label for="register-password">Contraseña</label>
-          <input id="register-password" type="password" placeholder="Mínimo 6 caracteres" [(ngModel)]="password" autocomplete="new-password" />
+          <label for="register-password">{{ 'auth.password' | t }}</label>
+          <input id="register-password" type="password" [placeholder]="'auth.passwordHint' | t" [(ngModel)]="password" autocomplete="new-password" />
         </div>
 
         <ion-button expand="block" class="pa-btn-lg solid" (click)="signUp()" [disabled]="loading()">
-          @if (loading()) { <ion-spinner name="crescent"></ion-spinner> } @else { Registrarse }
+          @if (loading()) { <ion-spinner name="crescent"></ion-spinner> } @else { {{ 'auth.signUp' | t }} }
         </ion-button>
       }
 
       @case ('organization') {
-        <span class="step-pill">Paso 3 de 3</span>
-        <h2 class="pa-section-title" style="margin-top:0">Crea tu empresa</h2>
+        <span class="step-pill">{{ 'auth.orgStep' | t }}</span>
+        <h2 class="pa-section-title" style="margin-top:0">{{ 'auth.createOrg' | t }}</h2>
         <p style="color:var(--pa-text-soft);margin:-8px 0 16px;font-size:0.9rem;line-height:1.5">
-          Serás administrador y podrás invitar a tu equipo y crear guías.
+          {{ 'auth.orgHint' | t }}
         </p>
 
         <div class="pa-field">
-          <label for="org-name">Nombre de la empresa</label>
-          <input id="org-name" type="text" placeholder="Mi Empresa S.L." [(ngModel)]="orgName" autocomplete="organization" />
+          <label for="org-name">{{ 'auth.orgName' | t }}</label>
+          <input id="org-name" type="text" [placeholder]="'auth.orgPlaceholder' | t" [(ngModel)]="orgName" autocomplete="organization" />
         </div>
 
         <ion-button expand="block" class="pa-btn-lg solid" (click)="createOrganization()" [disabled]="loading()">
-          @if (loading()) { <ion-spinner name="crescent"></ion-spinner> } @else { Crear empresa }
+          @if (loading()) { <ion-spinner name="crescent"></ion-spinner> } @else { {{ 'auth.createCompany' | t }} }
         </ion-button>
 
         <button type="button" class="skip-btn" (click)="continueToApp()">
-          Ya estoy vinculado, continuar a la app
+          {{ 'auth.alreadyLinked' | t }}
         </button>
       }
     }

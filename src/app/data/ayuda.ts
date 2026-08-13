@@ -1,13 +1,14 @@
+import { AppLanguage } from '../utils/preferences.util';
+
 export interface AyudaArticle {
   id: string;
   title: string;
-  /** Nombre del ion-icon (ionicons) */
   icon: string;
   category: string;
   content_md: string;
 }
 
-export const AYUDA_ARTICULOS: AyudaArticle[] = [
+const AYUDA_ES: AyudaArticle[] = [
   {
     id: 'bienvenida',
     title: 'Bienvenido a PatternAI',
@@ -15,24 +16,21 @@ export const AYUDA_ARTICULOS: AyudaArticle[] = [
     category: 'General',
     content_md: `# Bienvenido a PatternAI
 
-PatternAI es el lugar donde tu equipo guarda **procedimientos, guías y know-how** en un solo sitio — claro, buscable y fácil de compartir.
+PatternAI es donde tu equipo guarda **procedimientos, guías y know-how** — claro, buscable y fácil de compartir. Sirve para ventas, operaciones, soporte, RRHH o cualquier área.
 
-## ¿Qué puedes hacer aquí?
+## ¿Qué puedes hacer?
 
 - **Crear guías** en markdown desde la pestaña Guías.
-- **Decidir quién las ve**: privada, compartida con personas concretas o visible para toda la empresa.
-- **Descargar en PDF** desde cualquier tarjeta.
-- **Compartir con el equipo** o **por enlace** externo.
-- **Invitar miembros** desde Equipo y configurar qué puede hacer cada uno.
+- **Generar con IA** a partir del título.
+- **Decidir quién las ve**: privada, compartida o toda la empresa.
+- **Descargar PDF** y **compartir** con el equipo o por enlace.
+- **Invitar miembros** desde Equipo.
 
 ## Primeros pasos
 
-1. Lee los artículos de la sección Ayuda en Cuenta.
-2. Explora **Inicio** y **Guías** cuando tengas contenido.
-3. Invita a alguien desde **Equipo → Invitar miembro**.
-4. Crea tu primera guía real cuando quieras.
-
-Tu espacio ya está listo para empezar.
+1. Explora **Inicio** y **Guías**.
+2. Crea una guía con el botón **Generar con IA**.
+3. Invita a alguien desde **Equipo**.
 `,
   },
   {
@@ -43,71 +41,120 @@ Tu espacio ya está listo para empezar.
     content_md: `# Cómo crear una guía
 
 ## Paso 1 · Abre Guías
-Toca la pestaña **Guías** y pulsa el botón **+** flotante.
+Toca **Guías** y pulsa **Crear guía**.
 
 ## Paso 2 · Completa los datos
-- **Título**: algo claro y buscable.
-- **Categoría**: Backend, Frontend, Infraestructura o General.
-- **Visibilidad**:
-  - **Privada** — solo tú (y admins).
-  - **Compartida** — con miembros que elijas.
-  - **Empresa** — visible en el catálogo para todos.
+- **Título**: claro y buscable.
+- **Categoría**: Ventas, Operaciones, Atención al cliente, RRHH o General.
+- **Visibilidad**: Privada, Compartida o Empresa.
 
-## Paso 3 · Escribe el contenido
-Usa **Markdown**: títulos, listas, enlaces y bloques de código. Al guardar, la guía aparece en Inicio y en el catálogo según su visibilidad.
-
-> Tip: empieza con una plantilla simple — objetivo, pasos y responsables.
+## Paso 3 · Contenido
+Escribe en Markdown o pulsa **Generar con IA** para crear el borrador automáticamente.
 `,
   },
   {
     id: 'compartir',
-    title: 'Compartir: en la app, PDF o enlace',
+    title: 'Compartir: app, PDF o enlace',
     icon: 'share-social-outline',
     category: 'Guías',
-    content_md: `# Compartir: en la app, PDF o enlace
+    content_md: `# Compartir guías
 
-PatternAI ofrece **tres formas** de compartir una guía:
+- **En la app** — elige un miembro del equipo.
+- **PDF** — descarga y envía por cualquier canal.
+- **Enlace** — link externo de solo lectura.
 
-## 1 · Compartir en la app
-Desde la tarjeta o el detalle, pulsa **Compartir** y elige un miembro del equipo. La guía aparecerá en su **Inicio** como «Compartida contigo».
-
-## 2 · Descargar PDF
-Pulsa **PDF** para generar el documento en tu dispositivo y enviarlo por email, WhatsApp, etc.
-
-## 3 · Enlace externo
-Pulsa **Enlace** para crear un link que puedes abrir con el menú nativo de compartir del móvil.
-
-## Permisos
-En **Equipo**, el admin puede activar: ver, descargar, compartir o crear guías para cada miembro.
+Los permisos se configuran en **Equipo**.
 `,
   },
   {
     id: 'equipo-permisos',
-    title: 'Gestionar tu equipo y permisos',
+    title: 'Equipo y permisos',
     icon: 'people-outline',
     category: 'Equipo',
-    content_md: `# Gestionar tu equipo y permisos
+    content_md: `# Equipo y permisos
 
-## Invitar por email
-En **Equipo**, pulsa **Invitar miembro**, escribe el email y elige rol (Miembro o Administrador). La persona quedará vinculada cuando se registre con ese mismo email.
-
-## Configurar permisos
-Toca un miembro para abrir el panel de permisos:
-
-- **Ver guías compartidas** — acceso a lo que le compartas.
-- **Descargar PDF** — generar PDF desde las tarjetas.
-- **Compartir por enlace** — crear links externos.
-- **Crear guías nuevas** — acceso al catálogo y al botón +.
-
-También puedes **desactivar** un miembro sin borrarlo.
-
-## Roles
-- **Administradora**: acceso completo al catálogo, equipo e invitaciones.
-- **Miembro**: ve lo compartido y lo que sus permisos permitan.
+Invita por email, asigna rol (Miembro o Administrador) y configura permisos: ver, descargar, compartir y crear guías.
 `,
   },
 ];
 
-export function getAyudaById(id: string): AyudaArticle | undefined {
-  return AYUDA_ARTICULOS.find((a) => a.id === id);
+const AYUDA_EN: AyudaArticle[] = [
+  {
+    id: 'bienvenida',
+    title: 'Welcome to PatternAI',
+    icon: 'hand-left-outline',
+    category: 'General',
+    content_md: `# Welcome to PatternAI
+
+PatternAI is where your team stores **procedures, guides and know-how** — clear, searchable and easy to share. Works for sales, operations, support, HR or any team.
+
+## What you can do
+
+- **Create guides** in markdown from the Guides tab.
+- **Generate with AI** from the title.
+- **Control visibility**: private, shared or company-wide.
+- **Download PDF** and **share** with the team or via link.
+- **Invite members** from Team.
+
+## Getting started
+
+1. Explore **Home** and **Guides**.
+2. Create a guide with **Generate with AI**.
+3. Invite someone from **Team**.
+`,
+  },
+  {
+    id: 'crear-guia',
+    title: 'How to create a guide',
+    icon: 'create-outline',
+    category: 'Guides',
+    content_md: `# How to create a guide
+
+## Step 1 · Open Guides
+Tap **Guides** and press **Create guide**.
+
+## Step 2 · Fill in details
+- **Title**: clear and searchable.
+- **Category**: Sales, Operations, Customer support, HR or General.
+- **Visibility**: Private, Shared or Company.
+
+## Step 3 · Content
+Write in Markdown or tap **Generate with AI** for an automatic draft.
+`,
+  },
+  {
+    id: 'compartir',
+    title: 'Share: app, PDF or link',
+    icon: 'share-social-outline',
+    category: 'Guides',
+    content_md: `# Sharing guides
+
+- **In the app** — pick a team member.
+- **PDF** — download and send anywhere.
+- **Link** — read-only external link.
+
+Permissions are managed in **Team**.
+`,
+  },
+  {
+    id: 'equipo-permisos',
+    title: 'Team and permissions',
+    icon: 'people-outline',
+    category: 'Team',
+    content_md: `# Team and permissions
+
+Invite by email, assign role (Member or Administrator) and set permissions: view, download, share and create guides.
+`,
+  },
+];
+
+export function getAyudaArticles(lang: AppLanguage = 'es'): AyudaArticle[] {
+  return lang === 'en' ? AYUDA_EN : AYUDA_ES;
+}
+
+/** @deprecated Use getAyudaArticles(lang) */
+export const AYUDA_ARTICULOS = AYUDA_ES;
+
+export function getAyudaById(id: string, lang: AppLanguage = 'es'): AyudaArticle | undefined {
+  return getAyudaArticles(lang).find((a) => a.id === id);
 }

@@ -2,7 +2,7 @@
   <ion-tab-bar slot="bottom" class="pattern-tab-bar">
     <ion-tab-button tab="inicio" href="/tabs/inicio" class="main-tab">
       <ion-icon name="home-outline" aria-hidden="true"></ion-icon>
-      <ion-label>Inicio</ion-label>
+      <ion-label>{{ 'tabs.home' | t }}</ion-label>
     </ion-tab-button>
 
     <ion-tab-button
@@ -16,17 +16,17 @@
       } @else {
         <ion-icon name="lock-closed-outline" aria-hidden="true"></ion-icon>
       }
-      <ion-label>Guías</ion-label>
+      <ion-label>{{ 'tabs.guides' | t }}</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="equipo" href="/tabs/equipo" class="main-tab">
       <ion-icon name="people-outline" aria-hidden="true"></ion-icon>
-      <ion-label>Equipo</ion-label>
+      <ion-label>{{ 'tabs.team' | t }}</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="cuenta" href="/tabs/cuenta" class="cuenta-tab-btn">
       <span class="cuenta-initials" aria-hidden="true">{{ initials }}</span>
-      <ion-label>Cuenta</ion-label>
+      <ion-label>{{ 'tabs.account' | t }}</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>
